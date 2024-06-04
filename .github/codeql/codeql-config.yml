@@ -1,9 +1,32 @@
-packs:
-  # Use these packs for JavaScript analysis
-  javascript:
-    - scope/js-pack1
-    - scope/js-pack2
-  # Use these packs for Java analysis
-  java:
-    - scope/java-pack1
-    - scope/java-pack2@v1.0.0
+name: "CodeQL Analysis"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  codeql:
+    name: "CodeQL"
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: "Checkout repository"
+      uses: actions/checkout@v2
+
+    - name: "Initialize CodeQL"
+      uses: github/codeql-action/init@v2
+      with:
+        config-file: .github/codeql/codeql-config.yml
+        packs: |
+          javascript:scope/js-pack1
+          javascript:scope/js-pack2
+          java:scope/java-pack1
+          java:scope/java-pack2@v1.0.0
+
+    - name: "Autobuild"
+      uses: github/codeql-action/autobuild@v2
+
+    - name: "Perform CodeQL Analysis"
+      uses: github/codeql-action/analyze@v2
